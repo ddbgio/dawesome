@@ -45,6 +45,8 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // key listeners
+    let clicks = []; // clicks are for tap tempo
+    let state = 0; // [neutral, waiting, prelude, rec, play]
     document.addEventListener('keydown', function(event) {
         switch (event.key) {
             case "-":
@@ -61,6 +63,30 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (config.debug) console.log("resetting octave");
                 noteStopAll();
                 break;
+            case "`":
+                function delay() {
+                    let msPerMin = 1000 * 60;
+                    let i1 = Number(clicks[clicks.length - 1]) - Number(clicks[clicks.length - 2]);
+                    console.log(i1);
+
+                    console.log(msPerMin / i1 + "bpm");
+                    document.getElementById("bpm").innerHTML = Math.round(msPerMin / i1);
+                }
+                function click() {
+                    clicks.push(Date.now());
+
+                    switch (state) {
+                        case 0:
+                            state = 1;
+                            console.log("waiting");
+                            break;
+                        case 1:
+                            console.log(clicks);
+                            delay();
+                    }
+                    console.log("click");
+                }
+                click();
             default:
                 noteStart(event);
         }
