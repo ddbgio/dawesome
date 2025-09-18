@@ -64,15 +64,33 @@ document.addEventListener('DOMContentLoaded', function() {
                 noteStopAll();
                 break;
             case "`":
+                function ms_to_bpm(ms) {
+                    return 60000 / ms;
+                }
+                function bpm_to_ms(bpm) {
+                    return 60000 / bpm;
+                }
+
+                let tempoTimeoutMs = 3000;
                 function delay() {
                     let msPerMin = 1000 * 60;
                     let i1 = Number(clicks[clicks.length - 1]) - Number(clicks[clicks.length - 2]);
                     console.log(i1);
 
+                    console.log(ms_to_bpm(i1));
                     console.log(msPerMin / i1 + "bpm");
                     document.getElementById("bpm").innerHTML = Math.round(msPerMin / i1);
                 }
                 function click() {
+                    now = Date.now()
+
+                    // reset on timeout
+                    if ((now - tempoTimeoutMs) > clicks[clicks.length - 1]) {
+                        clicks = [];
+                        state = 0;
+                        console.log("reset");
+                    }
+
                     clicks.push(Date.now());
 
                     switch (state) {
